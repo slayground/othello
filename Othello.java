@@ -95,14 +95,17 @@ class Othello {
             System.out.println("displaying your boy lil black");
 
             flipSign(WHITE, BLACK, POSSIBLE_SCENARIOS_BLACK.get(pos));
-        } else {
+        } else if (player == WHITE) {
             TABLE[posX][posY] = WHITE;
             CURRENT_WHITES.add(pos);
 
             System.out.println("displaying your boy don white");
 
-            flipSign(BLACK, WHITE, POSSIBLE_SCENARIOS_BLACK.get(pos));
+            flipSign(BLACK, WHITE, POSSIBLE_SCENARIOS_WHITE.get(pos));
         }
+
+        POSSIBLE_SCENARIOS_BLACK.clear();
+        POSSIBLE_SCENARIOS_WHITE.clear();
 
         possibleMoves(BLACK);
         possibleMoves(WHITE);
@@ -128,7 +131,7 @@ class Othello {
             if (oldValue == BLACK) {
                 CURRENT_BLACKS.remove(arrays.get(index));
                 CURRENT_WHITES.add(arrays.get(index));
-            } else {
+            } else if (oldValue == WHITE) {
                 CURRENT_WHITES.remove(arrays.get(index));
                 CURRENT_BLACKS.add(arrays.get(index));
             }
