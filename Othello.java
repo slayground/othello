@@ -29,8 +29,8 @@ class Othello {
     static ArrayList<String> POSSIBLE_BLACKS = new ArrayList<String>();
     static ArrayList<String> POSSIBLE_WHITES = new ArrayList<String>();
 
-    static ArrayList<String> POSSIBLE_MOVES = new ArrayList<String>();
-    static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS = new HashMap<String, ArrayList<String>>();
+    //static ArrayList<String> POSSIBLE_MOVES = new ArrayList<String>();
+    //static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS = new HashMap<String, ArrayList<String>>();
 
     static ArrayList<String> POSSIBLE_MOVES_BLACK = new ArrayList<String>();
     static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_BLACK = new HashMap<String, ArrayList<String>>();
