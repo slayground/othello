@@ -29,14 +29,16 @@ class Othello {
     static ArrayList<String> POSSIBLE_BLACKS = new ArrayList<String>();
     static ArrayList<String> POSSIBLE_WHITES = new ArrayList<String>();
 
-    //static ArrayList<String> POSSIBLE_MOVES = new ArrayList<String>();
-    //static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS = new HashMap<String, ArrayList<String>>();
+    static ArrayList<String> POSSIBLE_MOVES = new ArrayList<String>();
+    static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS = new HashMap<String, ArrayList<String>>();
 
     static ArrayList<String> POSSIBLE_MOVES_BLACK = new ArrayList<String>();
-    static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_BLACK = new HashMap<String, ArrayList<String>>();
+    //static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_BLACK = new HashMap<String, ArrayList<String>>();
+    static Map<String, ArrayList<ArrayList<String>>> POSSIBLE_SCENARIOS_BLACK = new HashMap<String, ArrayList<ArrayList<String>>>();
 
     static ArrayList<String> POSSIBLE_MOVES_WHITE = new ArrayList<String>();
-    static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_WHITE = new HashMap<String, ArrayList<String>>();
+    //static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_WHITE = new HashMap<String, ArrayList<String>>();
+    static Map<String, ArrayList<ArrayList<String>>> POSSIBLE_SCENARIOS_WHITE = new HashMap<String, ArrayList<ArrayList<String>>>();
 
     public Othello() {
         for (int row = 0; row < NUM_OF_ROW_COLUMN; row++) {
@@ -120,20 +122,22 @@ class Othello {
 
     }
 
-    public void flipSign(char oldValue, char newValue, ArrayList<String> arrays) {
-        for (int index = 0; index < arrays.size(); index++) {
-            int[] pos = convertInput(arrays.get(index));
-            int posX = pos[0];
-            int posY = pos[1];
+    public void flipSign(char oldValue, char newValue, ArrayList<ArrayList<String>> arrays) {
+        for (int list = 0; list < arrays.size(); list++) {
+            for (int index = 0; index < arrays.size(); index++) {
+                int[] pos = convertInput(arrays.get(list).get(index));
+                int posX = pos[0];
+                int posY = pos[1];
 
-            TABLE[posX][posY] = newValue;
-            
-            if (oldValue == BLACK) {
-                CURRENT_BLACKS.remove(arrays.get(index));
-                CURRENT_WHITES.add(arrays.get(index));
-            } else if (oldValue == WHITE) {
-                CURRENT_WHITES.remove(arrays.get(index));
-                CURRENT_BLACKS.add(arrays.get(index));
+                TABLE[posX][posY] = newValue;
+                
+                if (oldValue == BLACK) {
+                    CURRENT_BLACKS.remove(arrays.get(list).get(index));
+                    CURRENT_WHITES.add(arrays.get(list).get(index));
+                } else if (oldValue == WHITE) {
+                    CURRENT_WHITES.remove(arrays.get(list).get(index));
+                    CURRENT_BLACKS.add(arrays.get(list).get(index));
+                }
             }
         }
     }
@@ -167,8 +171,10 @@ class Othello {
                 int posX = Character.getNumericValue(pos.charAt(0));
                 int posY = Character.getNumericValue(pos.charAt(1));
 
-                checkHorizontal(player, posX, posY);
-                checkVertical(player, posX, posY);
+                checkHorizontalLeft(player, posX, posY);
+                checkHorizontalRight(player, posX, posY);
+                checkVerticalUp(player, posX, posY);
+                checkVerticalDown(player, posX, posY);
                 //checkDiagonal(player, posX, posY);
             }
         } else if (player == WHITE) {
@@ -177,14 +183,16 @@ class Othello {
                 int posX = Character.getNumericValue(pos.charAt(0));
                 int posY = Character.getNumericValue(pos.charAt(1));
 
-                checkHorizontal(player, posX, posY);
-                checkVertical(player, posX, posY);
+                checkHorizontalLeft(player, posX, posY);
+                checkHorizontalRight(player, posX, posY);
+                checkVerticalUp(player, posX, posY);
+                checkVerticalDown(player, posX, posY);
                 //checkDiagonal(player, posX, posY);
             }
         }
     }
 
-    public void checkHorizontal(char player, int posX, int posY) {
+    public void checkHorizontalLeft(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer;
@@ -207,16 +215,59 @@ class Othello {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        POSSIBLE_MOVES_BLACK.add(possible);
-                        POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+                        //POSSIBLE_MOVES_BLACK.add(possible);
+                        //POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)){
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_BLACK.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_BLACK.put(possible, list);
+                            POSSIBLE_MOVES_BLACK.add(possible);
+                        }
                     } else {
-                        POSSIBLE_MOVES_WHITE.add(possible);
-                        POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+                        // POSSIBLE_MOVES_WHITE.add(possible);
+                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)){
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_WHITE.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_WHITE.put(possible, list);
+                            POSSIBLE_MOVES_WHITE.add(possible);
+                        }
                     }
                 }
             }
-        // check horizontal right    
-        } else if (TABLE[posX][posY+1] == oppositePlayer) {
+        }
+    }
+
+    public void checkHorizontalRight(char player, int posX, int posY) {
+        ArrayList<String> betweenElements = new ArrayList<String>();
+
+        char oppositePlayer;
+        if (player == BLACK) {
+            oppositePlayer = WHITE;
+        } else {
+            oppositePlayer = BLACK;
+        }
+
+        // check horizontal right
+        if (TABLE[posX][posY+1] == oppositePlayer) {
             posY++;
             while (TABLE[posX][posY] == oppositePlayer && posY < NUM_OF_ROW_COLUMN) {
                 String currentElement = "" + posX + posY;
@@ -228,18 +279,48 @@ class Othello {
                     String possible = "" + posX + posY;
                     
                     if (player == BLACK) {
-                        POSSIBLE_MOVES_BLACK.add(possible);
-                        POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+                        // POSSIBLE_MOVES_BLACK.add(possible);
+                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)){
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_BLACK.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_BLACK.put(possible, list);
+                            POSSIBLE_MOVES_BLACK.add(possible);
+                        }
                     } else {
-                        POSSIBLE_MOVES_WHITE.add(possible);
-                        POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+                        // POSSIBLE_MOVES_WHITE.add(possible);
+                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)){
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_WHITE.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_WHITE.put(possible, list);
+                            POSSIBLE_MOVES_WHITE.add(possible);
+                        }
                     }
                 }
             }
         }
     }
 
-    public void checkVertical(char player, int posX, int posY) {
+    public void checkVerticalUp(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer;
@@ -262,16 +343,59 @@ class Othello {
                     String possible = "" + posX + posY;
                    
                     if (player == BLACK) {
-                        POSSIBLE_MOVES_BLACK.add(possible);
-                        POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+                        // POSSIBLE_MOVES_BLACK.add(possible);
+                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)){
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_BLACK.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_BLACK.put(possible, list);
+                            POSSIBLE_MOVES_BLACK.add(possible);
+                        }
                     } else {
-                        POSSIBLE_MOVES_WHITE.add(possible);
-                        POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+                        // POSSIBLE_MOVES_WHITE.add(possible);
+                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)){
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_WHITE.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_WHITE.put(possible, list);
+                            POSSIBLE_MOVES_WHITE.add(possible);
+                        }
                     }
                 }
             }
+        }
+    }
+
+    public void checkVerticalDown(char player, int posX, int posY) {
+        ArrayList<String> betweenElements = new ArrayList<String>();
+
+        char oppositePlayer;
+        if (player == BLACK) {
+            oppositePlayer = WHITE;
+        } else {
+            oppositePlayer = BLACK;
+        }
+
         // check vertical down
-        } else if (TABLE[posX+1][posY] == oppositePlayer) {
+        if (TABLE[posX+1][posY] == oppositePlayer) {
             posX++;
             while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN) {
                 String currentElement = "" + posX + posY;
@@ -283,11 +407,41 @@ class Othello {
                     String possible = "" + posX + posY;
                     
                     if (player == BLACK) {
-                        POSSIBLE_MOVES_BLACK.add(possible);
-                        POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+                        // POSSIBLE_MOVES_BLACK.add(possible);
+                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)){
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_BLACK.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_BLACK.put(possible, list);
+                            POSSIBLE_MOVES_BLACK.add(possible);
+                        }
                     } else {
-                        POSSIBLE_MOVES_WHITE.add(possible);
-                        POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+                        // POSSIBLE_MOVES_WHITE.add(possible);
+                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)){
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_WHITE.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_WHITE.put(possible, list);
+                            POSSIBLE_MOVES_WHITE.add(possible);
+                        }
                     }
                 }
             }
@@ -313,12 +467,12 @@ class Othello {
         // }
 
         System.out.println("Possible Scenarios for BLACK: ");
-        for (Map.Entry<String, ArrayList<String>> entry : POSSIBLE_SCENARIOS_BLACK.entrySet()) {
+        for (Map.Entry<String, ArrayList<ArrayList<String>>> entry : POSSIBLE_SCENARIOS_BLACK.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
 
         System.out.println("Possible Scenarios for WHITE: ");
-        for (Map.Entry<String, ArrayList<String>> entry : POSSIBLE_SCENARIOS_WHITE.entrySet()) {
+        for (Map.Entry<String, ArrayList<ArrayList<String>>> entry : POSSIBLE_SCENARIOS_WHITE.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
     }
