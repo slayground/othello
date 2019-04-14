@@ -1,3 +1,9 @@
+// TODO:
+// newMove() -> check valid -> update table
+// game flow
+// diagonal
+// AI
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
