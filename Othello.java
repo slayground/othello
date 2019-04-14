@@ -74,28 +74,65 @@ class Othello {
         // CURRENT_BLACKS.add(b40);
     }
 
-    public int[] convertInput(int input) {
-        int x = input / 10 - 1;
-        int y = input % 10 - 1;
+    public int[] convertInput(String input) {
+        int x = Character.getNumericValue(input.charAt(0));
+        int y = Character.getNumericValue(input.charAt(1));
         int[] result = {x, y};
         return result;
     }
 
     public void newMove(char player, int posX, int posY) {
 
-        POSSIBLE_MOVES.clear();
-        POSSIBLE_SCENARIOS.clear();
+        //POSSIBLE_MOVES.clear();
+        //POSSIBLE_SCENARIOS.clear();
 
         String pos = "" + posX + posY;
 
         if (player == BLACK) {
+            TABLE[posX][posY] = BLACK;
             CURRENT_BLACKS.add(pos);
-            possibleMoves(BLACK);
 
+            System.out.println("displaying your boy lil black");
+
+            flipSign(WHITE, BLACK, POSSIBLE_SCENARIOS_BLACK.get(pos));
+        } else {
+            TABLE[posX][posY] = WHITE;
+            CURRENT_WHITES.add(pos);
+
+            System.out.println("displaying your boy don white");
+
+            flipSign(BLACK, WHITE, POSSIBLE_SCENARIOS_BLACK.get(pos));
         }
 
-        validateInput(player, posX, posY);
+        possibleMoves(BLACK);
+        possibleMoves(WHITE);
 
+        System.out.println("NEW CURRENT_BLACKS " + CURRENT_BLACKS);
+        System.out.println("NEW CURRENT WHITES " + CURRENT_WHITES);
+        
+        displayTable();
+        displayPossibleMoves();
+
+        //validateInput(player, posX, posY);
+
+    }
+
+    public void flipSign(char oldValue, char newValue, ArrayList<String> arrays) {
+        for (int index = 0; index < arrays.size(); index++) {
+            int[] pos = convertInput(arrays.get(index));
+            int posX = pos[0];
+            int posY = pos[1];
+
+            TABLE[posX][posY] = newValue;
+            
+            if (oldValue == BLACK) {
+                CURRENT_BLACKS.remove(arrays.get(index));
+                CURRENT_WHITES.add(arrays.get(index));
+            } else {
+                CURRENT_WHITES.remove(arrays.get(index));
+                CURRENT_BLACKS.add(arrays.get(index));
+            }
+        }
     }
 
     public boolean validateInput(char player, int posX, int posY) {
@@ -154,7 +191,6 @@ class Othello {
             oppositePlayer = BLACK;
         }
 
-        System.out.println("Starts checking " + posX + posY);
         // check horizontal left
         if (TABLE[posX][posY-1] == oppositePlayer) {
             posY--;

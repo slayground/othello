@@ -7,7 +7,7 @@ class BoardGame {
         othello.possibleMoves('W');
 
         othello.displayPossibleMoves();
-        
-        othello.newMove('B', 4, 2);
+
+        othello.newMove('B', 4, 5);
     }
 }
