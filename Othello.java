@@ -166,8 +166,14 @@ class Othello {
             if (posY >= 0) {
                 if (TABLE[posX][posY] == EMPTY) {
                     String possible = "" + posX + posY;
-                    POSSIBLE_MOVES.add(possible);
-                    POSSIBLE_SCENARIOS.put(possible, betweenElements);
+
+                    if (player == BLACK) {
+                        POSSIBLE_MOVES_BLACK.add(possible);
+                        POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+                    } else {
+                        POSSIBLE_MOVES_WHITE.add(possible);
+                        POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+                    }
                 }
             }
         // check horizontal right    
@@ -181,8 +187,14 @@ class Othello {
             if (posY <= NUM_OF_ROW_COLUMN) {
                 if (TABLE[posX][posY] == EMPTY) {
                     String possible = "" + posX + posY;
-                    POSSIBLE_MOVES.add(possible);
-                    POSSIBLE_SCENARIOS.put(possible, betweenElements);
+                    
+                    if (player == BLACK) {
+                        POSSIBLE_MOVES_BLACK.add(possible);
+                        POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+                    } else {
+                        POSSIBLE_MOVES_WHITE.add(possible);
+                        POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+                    }
                 }
             }
         }
@@ -209,8 +221,14 @@ class Othello {
             if (posX >= 0) {
                 if (TABLE[posX][posY] == EMPTY) {
                     String possible = "" + posX + posY;
-                    POSSIBLE_MOVES.add(possible);
-                    POSSIBLE_SCENARIOS.put(possible, betweenElements);
+                   
+                    if (player == BLACK) {
+                        POSSIBLE_MOVES_BLACK.add(possible);
+                        POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+                    } else {
+                        POSSIBLE_MOVES_WHITE.add(possible);
+                        POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+                    }
                 }
             }
         // check vertical down
@@ -224,8 +242,14 @@ class Othello {
             if (posX <= NUM_OF_ROW_COLUMN) {
                 if (TABLE[posX][posY] == EMPTY) {
                     String possible = "" + posX + posY;
-                    POSSIBLE_MOVES.add(possible);
-                    POSSIBLE_SCENARIOS.put(possible, betweenElements);
+                    
+                    if (player == BLACK) {
+                        POSSIBLE_MOVES_BLACK.add(possible);
+                        POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+                    } else {
+                        POSSIBLE_MOVES_WHITE.add(possible);
+                        POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+                    }
                 }
             }
         }
@@ -243,14 +267,19 @@ class Othello {
     }
 
     public void displayPossibleMoves() {
-        System.out.print("Possible moves: ");
-        for (int i = 0; i < POSSIBLE_MOVES.size(); i++) {
-            String element = POSSIBLE_MOVES.get(i);
-            System.out.print(element + " ");
+        // System.out.print("Possible moves: ");
+        // for (int i = 0; i < POSSIBLE_MOVES.size(); i++) {
+        //     String element = POSSIBLE_MOVES.get(i);
+        //     System.out.print(element + " ");
+        // }
+
+        System.out.println("Possible Scenarios for BLACK: ");
+        for (Map.Entry<String, ArrayList<String>> entry : POSSIBLE_SCENARIOS_BLACK.entrySet()) {
+            System.out.println(entry.getKey() + ":" + entry.getValue());
         }
 
-        System.out.println("Possible Scenarios: ");
-        for (Map.Entry<String, ArrayList<String>> entry : POSSIBLE_SCENARIOS.entrySet()) {
+        System.out.println("Possible Scenarios for WHITE: ");
+        for (Map.Entry<String, ArrayList<String>> entry : POSSIBLE_SCENARIOS_WHITE.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
     }
