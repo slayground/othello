@@ -13,8 +13,9 @@ class Othello {
     // BLACK 'B'
     // WHITE 'W'
 
-    static int NUM_OF_PLAYERS = 2;
-    static int NUM_OF_ROW_COLUMN = 8;
+    static final int NUM_OF_PLAYERS = 2;
+    static final int NUM_OF_ROW_COLUMN = 8;
+    static int NUM_OF_CHECKERS = 4;
 
     static char[][] TABLE = new char[NUM_OF_ROW_COLUMN][NUM_OF_ROW_COLUMN];
     static final char EMPTY = '_';
@@ -31,6 +32,12 @@ class Othello {
     static ArrayList<String> POSSIBLE_MOVES = new ArrayList<String>();
     static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS = new HashMap<String, ArrayList<String>>();
 
+    static ArrayList<String> POSSIBLE_MOVES_BLACK = new ArrayList<String>();
+    static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_BLACK = new HashMap<String, ArrayList<String>>();
+
+    static ArrayList<String> POSSIBLE_MOVES_WHITE = new ArrayList<String>();
+    static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_WHITE = new HashMap<String, ArrayList<String>>();
+
     public Othello() {
         for (int row = 0; row < NUM_OF_ROW_COLUMN; row++) {
             for (int col = 0; col < NUM_OF_ROW_COLUMN; col++) {
@@ -38,19 +45,22 @@ class Othello {
             }
         }
 
+        initiateTable();
+
+        displayTable();
+    }
+
+    public void initiateTable() {
+
         TABLE[3][4] = BLACK;
         TABLE[4][3] = BLACK;
         TABLE[3][3] = WHITE;
         TABLE[4][4] = WHITE;
 
-        String b34 = "34";
-        String b43 = "43";
-        String w33 = "33";
-        String w44 = "44";
-        CURRENT_BLACKS.add(b34);
-        CURRENT_BLACKS.add(b43);
-        CURRENT_WHITES.add(w33);
-        CURRENT_WHITES.add(w44);
+        CURRENT_BLACKS.add("34");
+        CURRENT_BLACKS.add("43");
+        CURRENT_WHITES.add("33");
+        CURRENT_WHITES.add("44");
 
         // TEST BOUNDS
         // TABLE[4][2] = BLACK;
@@ -62,8 +72,6 @@ class Othello {
         // CURRENT_BLACKS.add(b42);
         // CURRENT_BLACKS.add(b41);
         // CURRENT_BLACKS.add(b40);
-
-        displayTable();
     }
 
     public int[] convertInput(int input) {
@@ -71,6 +79,45 @@ class Othello {
         int y = input % 10 - 1;
         int[] result = {x, y};
         return result;
+    }
+
+    public void newMove(char player, int posX, int posY) {
+
+        POSSIBLE_MOVES.clear();
+        POSSIBLE_SCENARIOS.clear();
+
+        String pos = "" + posX + posY;
+
+        if (player == BLACK) {
+            CURRENT_BLACKS.add(pos);
+            possibleMoves(BLACK);
+
+        }
+
+        validateInput(player, posX, posY);
+
+    }
+
+    public boolean validateInput(char player, int posX, int posY) {
+
+        String pos = "" + posX + posY;
+
+        if (player == BLACK) {
+            possibleMoves(BLACK);
+            if (POSSIBLE_SCENARIOS.containsKey(pos)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            possibleMoves(WHITE);
+            if  (POSSIBLE_SCENARIOS.containsKey(pos)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
     }
 
     public void possibleMoves(char player) {
@@ -110,14 +157,11 @@ class Othello {
         System.out.println("Starts checking " + posX + posY);
         // check horizontal left
         if (TABLE[posX][posY-1] == oppositePlayer) {
-            //System.out.println("Starts checking horizontal left");
             posY--;
             while (TABLE[posX][posY] == oppositePlayer && posY > 0) {
                 String currentElement = "" + posX + posY;
                 betweenElements.add(currentElement);
-                //System.out.println("Adding " + currentElement + " with current size is " + betweenElements.size());
                 posY--;
-                //System.out.println("Currently at " + posX + posY);
             }
             if (posY >= 0) {
                 if (TABLE[posX][posY] == EMPTY) {
@@ -128,14 +172,11 @@ class Othello {
             }
         // check horizontal right    
         } else if (TABLE[posX][posY+1] == oppositePlayer) {
-            //System.out.println("Starts checking horizontal right");
             posY++;
             while (TABLE[posX][posY] == oppositePlayer && posY < NUM_OF_ROW_COLUMN) {
                 String currentElement = "" + posX + posY;
                 betweenElements.add(currentElement);
-                //System.out.println("Adding " + currentElement + " with current size is " + betweenElements.size());
                 posY++;
-                //System.out.println("Currently at " + posX + posY);
             }
             if (posY <= NUM_OF_ROW_COLUMN) {
                 if (TABLE[posX][posY] == EMPTY) {
@@ -164,7 +205,6 @@ class Othello {
                 String currentElement = "" + posX + posY;
                 betweenElements.add(currentElement);
                 posX--;
-                //System.out.println("Currently at " + posX + posY);
             }
             if (posX >= 0) {
                 if (TABLE[posX][posY] == EMPTY) {
@@ -180,7 +220,6 @@ class Othello {
                 String currentElement = "" + posX + posY;
                 betweenElements.add(currentElement);
                 posX++;
-                //System.out.println("Currently at " + posX + posY);
             }
             if (posX <= NUM_OF_ROW_COLUMN) {
                 if (TABLE[posX][posY] == EMPTY) {
@@ -192,9 +231,7 @@ class Othello {
         }
     }
 
-    public void newMove(char player, int posX, int posY) {
-        
-    }
+
 
     public void displayTable() {
         for (int row = 0; row < NUM_OF_ROW_COLUMN; row++) {
