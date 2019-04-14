@@ -124,19 +124,20 @@ class Othello {
 
     public void flipSign(char oldValue, char newValue, ArrayList<ArrayList<String>> arrays) {
         for (int list = 0; list < arrays.size(); list++) {
-            for (int index = 0; index < arrays.size(); index++) {
+            for (int index = 0; index < arrays.get(list).size(); index++) {
                 int[] pos = convertInput(arrays.get(list).get(index));
                 int posX = pos[0];
                 int posY = pos[1];
 
                 TABLE[posX][posY] = newValue;
                 
+                String flippedItem = "" + posX + posY;
                 if (oldValue == BLACK) {
-                    CURRENT_BLACKS.remove(arrays.get(list).get(index));
-                    CURRENT_WHITES.add(arrays.get(list).get(index));
+                    CURRENT_BLACKS.remove(flippedItem);
+                    CURRENT_WHITES.add(flippedItem);
                 } else if (oldValue == WHITE) {
-                    CURRENT_WHITES.remove(arrays.get(list).get(index));
-                    CURRENT_BLACKS.add(arrays.get(list).get(index));
+                    CURRENT_WHITES.remove(flippedItem);
+                    CURRENT_BLACKS.add(flippedItem);
                 }
             }
         }

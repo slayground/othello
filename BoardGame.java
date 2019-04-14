@@ -12,5 +12,6 @@ class BoardGame {
         othello.newMove('W', 5, 3);
         othello.newMove('B', 3, 2);
         othello.newMove('B', 6, 3);
+        //othello.newMove('W', 7, 3);
     }
 }
