@@ -35,13 +35,9 @@ class Board {
     static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS = new HashMap<String, ArrayList<String>>();
 
     static ArrayList<String> POSSIBLE_MOVES_BLACK = new ArrayList<String>();
-    // static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_BLACK = new
-    // HashMap<String, ArrayList<String>>();
     static Map<String, ArrayList<ArrayList<String>>> POSSIBLE_SCENARIOS_BLACK = new HashMap<String, ArrayList<ArrayList<String>>>();
 
     static ArrayList<String> POSSIBLE_MOVES_WHITE = new ArrayList<String>();
-    // static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS_WHITE = new
-    // HashMap<String, ArrayList<String>>();
     static Map<String, ArrayList<ArrayList<String>>> POSSIBLE_SCENARIOS_WHITE = new HashMap<String, ArrayList<ArrayList<String>>>();
 
     public Board() {
@@ -97,24 +93,37 @@ class Board {
         }
     }
 
-    public int getWinner() {
-        if (CURRENT_BLACKS.size() > CURRENT_WHITES.size()) {
-            return 1;
-        } else if (CURRENT_BLACKS.size() < CURRENT_WHITES.size()) {
-            return 2;
+    public int[] getWinner() {
+        int blackSize = CURRENT_BLACKS.size();
+        int whiteSize = CURRENT_WHITES.size();
+        int winner;
+
+        if (blackSize > whiteSize) {
+            winner = 1;
+        } else if (blackSize< whiteSize) {
+            winner = 2;
         } else {
-            return 3;
+            winner = 3; // tie game
         }
+
+        int[] result = {winner, blackSize, whiteSize};
+
+        return result;
     }
 
     public void botMove() {
         int size = POSSIBLE_MOVES_WHITE.size();
 
-        Random ran = new Random();
-        int index = ran.nextInt(size);
-
-        int[] xy = convertInput(POSSIBLE_MOVES_WHITE.get(index));
-        newMove(WHITE, xy[0], xy[1]);
+        if (size == 0) {
+            System.out.println("No move for WHITE. Bot lose round.");
+        } else {
+            Random ran = new Random();
+            String move = POSSIBLE_MOVES_WHITE.get(ran.nextInt(size));
+    
+            int[] xy = convertInput(move);
+            System.out.println("Bot made a move at " + move);
+            newMove(WHITE, xy[0], xy[1]);
+        }
     }
 
     public void newMove(char player, int posX, int posY) {
@@ -126,17 +135,19 @@ class Board {
 
         if (player == BLACK) {
             TABLE[posX][posY] = BLACK;
+            //System.out.println("ADDING " + pos + " TO CURRENT_BLACKS");
             CURRENT_BLACKS.add(pos);
 
-            System.out.println("displaying your boy lil black");
-
+            //System.out.println("BEFORE FLIPPING WHITE");
+            //System.out.println("POSSIBLE_SCENARIOS_BLACK " + POSSIBLE_SCENARIOS_BLACK.get(pos));
             flipSign(WHITE, BLACK, POSSIBLE_SCENARIOS_BLACK.get(pos));
         } else if (player == WHITE) {
             TABLE[posX][posY] = WHITE;
+            //System.out.println("ADDING " + pos + " TO CURRENT_WHITES");
             CURRENT_WHITES.add(pos);
 
-            System.out.println("displaying your boy don white");
-
+            //System.out.println("BEFORE FLIPPING BLACK");
+            //System.out.println("POSSIBLE_SCENARIOS_WHITE " + POSSIBLE_SCENARIOS_WHITE.get(pos));
             flipSign(BLACK, WHITE, POSSIBLE_SCENARIOS_WHITE.get(pos));
         }
 
@@ -160,6 +171,7 @@ class Board {
     }
 
     public void flipSign(char oldValue, char newValue, ArrayList<ArrayList<String>> arrays) {
+
         for (int list = 0; list < arrays.size(); list++) {
             for (int index = 0; index < arrays.get(list).size(); index++) {
                 int[] pos = convertInput(arrays.get(list).get(index));
@@ -186,15 +198,15 @@ class Board {
         String pos = "" + posX + posY;
 
         if (player == BLACK) {
-            possibleMoves(BLACK);
-            if (POSSIBLE_SCENARIOS.containsKey(pos)) {
+            //possibleMoves(BLACK);
+            if (POSSIBLE_SCENARIOS_BLACK.containsKey(pos)) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            possibleMoves(WHITE);
-            if (POSSIBLE_SCENARIOS.containsKey(pos)) {
+            //possibleMoves(WHITE);
+            if (POSSIBLE_SCENARIOS_WHITE.containsKey(pos)) {
                 return true;
             } else {
                 return false;
@@ -244,10 +256,8 @@ class Board {
         // return if at edge
         if (posY == 0) {
             return;
-        }
-
-        // check horizontal left
-        if (TABLE[posX][posY - 1] == oppositePlayer) {
+        } else if (TABLE[posX][posY - 1] == oppositePlayer) {
+            // check horizontal left
             posY--;
             while (TABLE[posX][posY] == oppositePlayer && posY > 0) {
                 String currentElement = "" + posX + posY;
@@ -311,14 +321,12 @@ class Board {
         }
 
         // return if at edge
-        if (posY == NUM_OF_ROW_COLUMN - 1) {
+        if (posY == (NUM_OF_ROW_COLUMN-1)) {
             return;
-        }
-
-        // check horizontal right
-        if (TABLE[posX][posY + 1] == oppositePlayer) {
+        } else if (TABLE[posX][posY + 1] == oppositePlayer) {
+            // check horizontal right
             posY++;
-            while (TABLE[posX][posY] == oppositePlayer && posY < NUM_OF_ROW_COLUMN) {
+            while (TABLE[posX][posY] == oppositePlayer && posY < NUM_OF_ROW_COLUMN-1) {
                 String currentElement = "" + posX + posY;
                 betweenElements.add(currentElement);
                 posY++;
@@ -382,10 +390,8 @@ class Board {
         // return if at edge
         if (posX == 0) {
             return;
-        }
-
-        // check vertical up
-        if (TABLE[posX - 1][posY] == oppositePlayer) {
+        } else if (TABLE[posX - 1][posY] == oppositePlayer) {
+            // check vertical up
             posX--;
             while (TABLE[posX][posY] == oppositePlayer && posX > 0) {
                 String currentElement = "" + posX + posY;
@@ -449,14 +455,12 @@ class Board {
         }
 
         // return if at edge
-        if (posX == NUM_OF_ROW_COLUMN - 1) {
+        if (posX == (NUM_OF_ROW_COLUMN - 1)) {
             return;
-        }
-
-        // check vertical down
-        if (TABLE[posX + 1][posY] == oppositePlayer) {
+        } else if (TABLE[posX + 1][posY] == oppositePlayer) {
+            // check vertical down
             posX++;
-            while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN) {
+            while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN-1) {
                 String currentElement = "" + posX + posY;
                 betweenElements.add(currentElement);
                 posX++;

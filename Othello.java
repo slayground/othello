@@ -9,40 +9,33 @@ class Othello {
         game.possibleMoves('B');
         game.possibleMoves('W');
 
-        System.out.println("Current game status is " + game.gameStatus());
-        Scanner scanner = new Scanner(System.in);
+        while (game.gameStatus() == 3) {
 
-        // while (game.gameStatus() == 3) {
-        //     System.out.print("Your next move: ");
-        //     try {
-        //         String input = scanner.nextLine();
-        //         if (verifyInput(input)) {
-        //             System.out.println("Valid input of " + input);
-        //         } else {
-        //             System.out.println("'Invalid input. Must be XX with X from 0-7");
-        //         }
-        //     }
-        //     catch (java.util.InputMismatchException e) {
-        //         System.out.println("Invalid input, please try again");
-        //     }
+            String input = getInput(game);
+            int posX = Character.getNumericValue(input.charAt(0));
+            int posY= Character.getNumericValue(input.charAt(1));
 
-        //     game.displayTable();
-        // }
+            game.newMove('B', posX, posY);
 
-        game.displayPossibleMoves();
+            if (game.gameStatus() == 3) {
+                game.botMove();
+            } else {
+                break;
+            }
 
-        game.newMove('B', 4, 5);
-        game.newMove('W', 5, 3);
-        game.newMove('B', 3, 2);
-        game.newMove('W', 2, 3);
-        game.newMove('B', 4, 2);
-        game.newMove('W', 3, 1);
-        game.newMove('B', 3, 0);
+        }
 
-        // white has no move
-        game.newMove('B', 6, 3);
-        // now white has a move
-        game.newMove('W', 7, 3);
+        int[] result = game.getWinner();
+        int winnerCode = result[0];
+        if (winnerCode == 1) {
+            System.out.println("Winner is BLACK - PLAYER.");
+        } else if (winnerCode == 2) {
+            System.out.println("Winner is WHITE - BOT");
+        } else {
+            System.out.println("Tie game.");
+        }
+        System.out.println("BLACK has " + result[1]);
+        System.out.println("WHITE has " + result[2]);
     }
 
     public static boolean verifyInput(String input) {
@@ -66,5 +59,39 @@ class Othello {
         }
 
         return true;
+    }
+
+    public static String getInput(Board game) {
+        String result = "";
+        Scanner scanner = new Scanner(System.in);
+
+        while (result == "") {
+            System.out.print("Your move: ");
+            try {
+                String input = scanner.nextLine();
+                if (verifyInput(input)) {
+                    // System.out.println("Valid input of " + input);
+                    // result = input;
+
+                    int posX = Character.getNumericValue(input.charAt(0));
+                    int posY= Character.getNumericValue(input.charAt(1));
+
+                    if (game.validateInput('B', posX, posY)) {
+                        result = input;
+                        System.out.println("Valid input. You made a move at " + input);
+                    } else {
+                        System.out.println("Valid input but can't make moves based on current table");
+                    }
+
+                } else {
+                    System.out.println("'Invalid input. Must be XX with X from 0-7");
+                }
+            }
+            catch (java.util.InputMismatchException e) {
+                System.out.println("Invalid input, please try again");
+            }
+        }
+
+        return result;
     }
 }
