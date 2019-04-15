@@ -15,7 +15,11 @@ class Othello {
             int posX = Character.getNumericValue(input.charAt(0));
             int posY= Character.getNumericValue(input.charAt(1));
 
-            game.newMove('B', posX, posY);
+            if (game.getNumChoices('B') == 0) {
+                System.out.println("No move this round for BLACK. Player lose round.");
+            } else {
+                game.newMove('B', posX, posY);
+            }
 
             if (game.gameStatus() == 3) {
                 game.botMove();

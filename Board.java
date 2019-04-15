@@ -116,6 +116,7 @@ class Board {
 
         if (size == 0) {
             System.out.println("No move for WHITE. Bot lose round.");
+            return;
         } else {
             Random ran = new Random();
             String move = POSSIBLE_MOVES_WHITE.get(ran.nextInt(size));
@@ -123,6 +124,14 @@ class Board {
             int[] xy = convertInput(move);
             System.out.println("Bot made a move at " + move);
             newMove(WHITE, xy[0], xy[1]);
+        }
+    }
+
+    public int getNumChoices(char player) {
+        if (player == BLACK) {
+            return POSSIBLE_MOVES_BLACK.size();
+        } else {
+            return POSSIBLE_MOVES_WHITE.size();
         }
     }
 
@@ -160,8 +169,8 @@ class Board {
         possibleMoves(BLACK);
         possibleMoves(WHITE);
 
-        System.out.println("NEW CURRENT_BLACKS " + CURRENT_BLACKS);
-        System.out.println("NEW CURRENT WHITES " + CURRENT_WHITES);
+        // System.out.println("NEW CURRENT_BLACKS " + CURRENT_BLACKS);
+        // System.out.println("NEW CURRENT WHITES " + CURRENT_WHITES);
 
         displayTable();
         displayPossibleMoves();
@@ -178,7 +187,7 @@ class Board {
                 int posX = pos[0];
                 int posY = pos[1];
 
-                System.out.println("Flipping " + posX + " " + posY);
+                //System.out.println("Flipping " + posX + " " + posY);
                 TABLE[posX][posY] = newValue;
 
                 String flippedItem = "" + posX + posY;
@@ -521,18 +530,13 @@ class Board {
     }
 
     public void displayPossibleMoves() {
-        // System.out.print("Possible moves: ");
-        // for (int i = 0; i < POSSIBLE_MOVES.size(); i++) {
-        // String element = POSSIBLE_MOVES.get(i);
-        // System.out.print(element + " ");
-        // }
 
-        System.out.println("Possible Scenarios for BLACK: ");
+        System.out.println("Possible Moves for BLACK: ");
         for (Map.Entry<String, ArrayList<ArrayList<String>>> entry : POSSIBLE_SCENARIOS_BLACK.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
 
-        System.out.println("Possible Scenarios for WHITE: ");
+        System.out.println("Possible Moves for WHITE: ");
         for (Map.Entry<String, ArrayList<ArrayList<String>>> entry : POSSIBLE_SCENARIOS_WHITE.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
