@@ -61,17 +61,6 @@ class Board {
         CURRENT_BLACKS.add("43");
         CURRENT_WHITES.add("33");
         CURRENT_WHITES.add("44");
-
-        // TEST BOUNDS
-        // TABLE[4][2] = BLACK;
-        // TABLE[4][1] = BLACK;
-        // TABLE[4][0] = BLACK;
-        // String b42 = "42";
-        // String b41 = "41";
-        // String b40 = "40";
-        // CURRENT_BLACKS.add(b42);
-        // CURRENT_BLACKS.add(b41);
-        // CURRENT_BLACKS.add(b40);
     }
 
     public int[] convertInput(String input) {
@@ -98,13 +87,13 @@ class Board {
 
         if (blackSize > whiteSize) {
             winner = 1;
-        } else if (blackSize< whiteSize) {
+        } else if (blackSize < whiteSize) {
             winner = 2;
         } else {
             winner = 3; // tie game
         }
 
-        int[] result = {winner, blackSize, whiteSize};
+        int[] result = { winner, blackSize, whiteSize };
 
         return result;
     }
@@ -118,7 +107,7 @@ class Board {
         } else {
             Random ran = new Random();
             String move = POSSIBLE_MOVES_WHITE.get(ran.nextInt(size));
-    
+
             int[] xy = convertInput(move);
             System.out.println("Bot made a move at " + move);
             newMove(WHITE, xy[0], xy[1]);
@@ -142,19 +131,21 @@ class Board {
 
         if (player == BLACK) {
             TABLE[posX][posY] = BLACK;
-            //System.out.println("ADDING " + pos + " TO CURRENT_BLACKS");
+            // System.out.println("ADDING " + pos + " TO CURRENT_BLACKS");
             CURRENT_BLACKS.add(pos);
 
-            //System.out.println("BEFORE FLIPPING WHITE");
-            //System.out.println("POSSIBLE_SCENARIOS_BLACK " + POSSIBLE_SCENARIOS_BLACK.get(pos));
+            // System.out.println("BEFORE FLIPPING WHITE");
+            // System.out.println("POSSIBLE_SCENARIOS_BLACK " +
+            // POSSIBLE_SCENARIOS_BLACK.get(pos));
             flipSign(WHITE, BLACK, POSSIBLE_SCENARIOS_BLACK.get(pos));
         } else if (player == WHITE) {
             TABLE[posX][posY] = WHITE;
-            //System.out.println("ADDING " + pos + " TO CURRENT_WHITES");
+            // System.out.println("ADDING " + pos + " TO CURRENT_WHITES");
             CURRENT_WHITES.add(pos);
 
-            //System.out.println("BEFORE FLIPPING BLACK");
-            //System.out.println("POSSIBLE_SCENARIOS_WHITE " + POSSIBLE_SCENARIOS_WHITE.get(pos));
+            // System.out.println("BEFORE FLIPPING BLACK");
+            // System.out.println("POSSIBLE_SCENARIOS_WHITE " +
+            // POSSIBLE_SCENARIOS_WHITE.get(pos));
             flipSign(BLACK, WHITE, POSSIBLE_SCENARIOS_WHITE.get(pos));
         }
 
@@ -172,9 +163,9 @@ class Board {
 
         // displayTable();
         // if (player == BLACK) {
-        //     displayPossibleMovesWhite();
+        // displayPossibleMovesWhite();
         // } else {
-        //     displayPossibleMovesBlack();
+        // displayPossibleMovesBlack();
         // }
     }
 
@@ -186,7 +177,7 @@ class Board {
                 int posX = pos[0];
                 int posY = pos[1];
 
-                //System.out.println("Flipping " + posX + " " + posY);
+                // System.out.println("Flipping " + posX + " " + posY);
                 TABLE[posX][posY] = newValue;
 
                 String flippedItem = "" + posX + posY;
@@ -206,14 +197,14 @@ class Board {
         String pos = "" + posX + posY;
 
         if (player == BLACK) {
-            //possibleMoves(BLACK);
+            // possibleMoves(BLACK);
             if (POSSIBLE_SCENARIOS_BLACK.containsKey(pos)) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            //possibleMoves(WHITE);
+            // possibleMoves(WHITE);
             if (POSSIBLE_SCENARIOS_WHITE.containsKey(pos)) {
                 return true;
             } else {
@@ -234,6 +225,10 @@ class Board {
                 checkHorizontalRight(player, posX, posY);
                 checkVerticalUp(player, posX, posY);
                 checkVerticalDown(player, posX, posY);
+                checkDiagonalUpLeft(player, posX, posY);
+                checkDiagonalUpRight(player, posX, posY);
+                checkDiagonalDownRight(player, posX, posY);
+                checkDiagonalDownLeft(player, posX, posY);
                 // checkDiagonal(player, posX, posY);
             }
         } else if (player == WHITE) {
@@ -246,6 +241,10 @@ class Board {
                 checkHorizontalRight(player, posX, posY);
                 checkVerticalUp(player, posX, posY);
                 checkVerticalDown(player, posX, posY);
+                checkDiagonalUpLeft(player, posX, posY);
+                checkDiagonalUpRight(player, posX, posY);
+                checkDiagonalDownRight(player, posX, posY);
+                checkDiagonalDownLeft(player, posX, posY);
                 // checkDiagonal(player, posX, posY);
             }
         }
@@ -254,12 +253,7 @@ class Board {
     public void checkHorizontalLeft(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
-        char oppositePlayer;
-        if (player == BLACK) {
-            oppositePlayer = WHITE;
-        } else {
-            oppositePlayer = BLACK;
-        }
+        char oppositePlayer = getOppositePlayer(player);
 
         // return if at edge
         if (posY == 0) {
@@ -321,20 +315,15 @@ class Board {
     public void checkHorizontalRight(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
-        char oppositePlayer;
-        if (player == BLACK) {
-            oppositePlayer = WHITE;
-        } else {
-            oppositePlayer = BLACK;
-        }
+        char oppositePlayer = getOppositePlayer(player);
 
         // return if at edge
-        if (posY == (NUM_OF_ROW_COLUMN-1)) {
+        if (posY == (NUM_OF_ROW_COLUMN - 1)) {
             return;
         } else if (TABLE[posX][posY + 1] == oppositePlayer) {
             // check horizontal right
             posY++;
-            while (TABLE[posX][posY] == oppositePlayer && posY < NUM_OF_ROW_COLUMN-1) {
+            while (TABLE[posX][posY] == oppositePlayer && posY < NUM_OF_ROW_COLUMN - 1) {
                 String currentElement = "" + posX + posY;
                 betweenElements.add(currentElement);
                 posY++;
@@ -388,12 +377,7 @@ class Board {
     public void checkVerticalUp(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
-        char oppositePlayer;
-        if (player == BLACK) {
-            oppositePlayer = WHITE;
-        } else {
-            oppositePlayer = BLACK;
-        }
+        char oppositePlayer = getOppositePlayer(player);
 
         // return if at edge
         if (posX == 0) {
@@ -455,12 +439,7 @@ class Board {
     public void checkVerticalDown(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
-        char oppositePlayer;
-        if (player == BLACK) {
-            oppositePlayer = WHITE;
-        } else {
-            oppositePlayer = BLACK;
-        }
+        char oppositePlayer = getOppositePlayer(player);
 
         // return if at edge
         if (posX == (NUM_OF_ROW_COLUMN - 1)) {
@@ -468,7 +447,7 @@ class Board {
         } else if (TABLE[posX + 1][posY] == oppositePlayer) {
             // check vertical down
             posX++;
-            while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN-1) {
+            while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN - 1) {
                 String currentElement = "" + posX + posY;
                 betweenElements.add(currentElement);
                 posX++;
@@ -519,11 +498,276 @@ class Board {
         }
     }
 
+    public void checkDiagonalUpLeft(char player, int posX, int posY) {
+        ArrayList<String> betweenElements = new ArrayList<String>();
+
+        char oppositePlayer = getOppositePlayer(player);
+
+        // return if at edge
+        if (posX == 0 || posY == 0) {
+            return;
+        } else if (TABLE[posX - 1][posY - 1] == oppositePlayer) {
+            // check vertical down
+            posX--;
+            posY--;
+            while (TABLE[posX][posY] == oppositePlayer && posX > 0 && posY > 0) {
+                String currentElement = "" + posX + posY;
+                betweenElements.add(currentElement);
+                posX--;
+                posY--;
+            }
+            if (posX >= 0 || posY >= 0) {
+                if (TABLE[posX][posY] == EMPTY) {
+                    String possible = "" + posX + posY;
+
+                    if (player == BLACK) {
+                        // POSSIBLE_MOVES_BLACK.add(possible);
+                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_BLACK.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_BLACK.put(possible, list);
+                            POSSIBLE_MOVES_BLACK.add(possible);
+                        }
+                    } else {
+                        // POSSIBLE_MOVES_WHITE.add(possible);
+                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_WHITE.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_WHITE.put(possible, list);
+                            POSSIBLE_MOVES_WHITE.add(possible);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void checkDiagonalUpRight(char player, int posX, int posY) {
+        ArrayList<String> betweenElements = new ArrayList<String>();
+
+        char oppositePlayer = getOppositePlayer(player);
+
+        // return if at edge
+        if (posX == 0 || posY == NUM_OF_ROW_COLUMN - 1) {
+            return;
+        } else if (TABLE[posX - 1][posY + 1] == oppositePlayer) {
+            // check vertical down
+            posX--;
+            posY++;
+            while (TABLE[posX][posY] == oppositePlayer && posX > 0 && posY < NUM_OF_ROW_COLUMN - 1) {
+                String currentElement = "" + posX + posY;
+                betweenElements.add(currentElement);
+                posX--;
+                posY++;
+            }
+            if (posX >= 0 || posY <= NUM_OF_ROW_COLUMN - 1) {
+                if (TABLE[posX][posY] == EMPTY) {
+                    String possible = "" + posX + posY;
+
+                    if (player == BLACK) {
+                        // POSSIBLE_MOVES_BLACK.add(possible);
+                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_BLACK.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_BLACK.put(possible, list);
+                            POSSIBLE_MOVES_BLACK.add(possible);
+                        }
+                    } else {
+                        // POSSIBLE_MOVES_WHITE.add(possible);
+                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_WHITE.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_WHITE.put(possible, list);
+                            POSSIBLE_MOVES_WHITE.add(possible);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void checkDiagonalDownRight(char player, int posX, int posY) {
+        ArrayList<String> betweenElements = new ArrayList<String>();
+
+        char oppositePlayer = getOppositePlayer(player);
+
+        // return if at edge
+        if (posX == NUM_OF_ROW_COLUMN - 1 || posY == NUM_OF_ROW_COLUMN - 1) {
+            return;
+        } else if (TABLE[posX + 1][posY + 1] == oppositePlayer) {
+            // check vertical down
+            posX++;
+            posY++;
+            while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN - 1
+                    && posY < NUM_OF_ROW_COLUMN - 1) {
+                String currentElement = "" + posX + posY;
+                betweenElements.add(currentElement);
+                posX++;
+                posY++;
+            }
+            if (posX >= NUM_OF_ROW_COLUMN - 1 || posY <= NUM_OF_ROW_COLUMN - 1) {
+                if (TABLE[posX][posY] == EMPTY) {
+                    String possible = "" + posX + posY;
+
+                    if (player == BLACK) {
+                        // POSSIBLE_MOVES_BLACK.add(possible);
+                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_BLACK.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_BLACK.put(possible, list);
+                            POSSIBLE_MOVES_BLACK.add(possible);
+                        }
+                    } else {
+                        // POSSIBLE_MOVES_WHITE.add(possible);
+                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_WHITE.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_WHITE.put(possible, list);
+                            POSSIBLE_MOVES_WHITE.add(possible);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void checkDiagonalDownLeft(char player, int posX, int posY) {
+        ArrayList<String> betweenElements = new ArrayList<String>();
+
+        char oppositePlayer = getOppositePlayer(player);
+
+        // return if at edge
+        if (posX == NUM_OF_ROW_COLUMN - 1|| posY == 0) {
+            return;
+        } else if (TABLE[posX + 1][posY - 1] == oppositePlayer) {
+            // check vertical down
+            posX++;
+            posY--;
+            while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN - 1 && posY > 0) {
+                String currentElement = "" + posX + posY;
+                betweenElements.add(currentElement);
+                posX++;
+                posY--;
+            }
+            if (posX <= NUM_OF_ROW_COLUMN - 1 || posY >= 0) {
+                if (TABLE[posX][posY] == EMPTY) {
+                    String possible = "" + posX + posY;
+
+                    if (player == BLACK) {
+                        // POSSIBLE_MOVES_BLACK.add(possible);
+                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_BLACK.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_BLACK.put(possible, list);
+                            POSSIBLE_MOVES_BLACK.add(possible);
+                        }
+                    } else {
+                        // POSSIBLE_MOVES_WHITE.add(possible);
+                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
+
+                        if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
+                            // if the key has already been used,
+                            // we'll just grab the array list and add the value to it
+                            ArrayList<ArrayList<String>> list = POSSIBLE_SCENARIOS_WHITE.get(possible);
+                            list.add(betweenElements);
+                        } else {
+                            // if the key hasn't been used yet,
+                            // we'll create a new ArrayList<String> object, add the value
+                            // and put it in the array list with the new key
+                            ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+                            list.add(betweenElements);
+                            POSSIBLE_SCENARIOS_WHITE.put(possible, list);
+                            POSSIBLE_MOVES_WHITE.add(possible);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public char getOppositePlayer(char player) {
+        if (player == BLACK) {
+            return WHITE;
+        } else {
+            return BLACK;
+        }
+    }
+
     public void displayTable() {
         System.out.println("     0   1   2   3   4   5   6   7");
         System.out.println("   _________________________________");
         for (int row = 0; row < NUM_OF_ROW_COLUMN; row++) {
-            //System.out.println("   |   |   |   |   |   |   |   |   |");
+            // System.out.println(" | | | | | | | | |");
             System.out.print(" " + row + " ");
             for (int col = 0; col < NUM_OF_ROW_COLUMN; col++) {
                 System.out.print("| " + TABLE[row][col] + " ");
