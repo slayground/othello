@@ -48,6 +48,7 @@ class Othello {
         }
 
         System.out.println("FINAL TABLE");
+        System.out.println();
         game.displayTable();
         System.out.println("BLACK has " + result[1]);
         System.out.println("WHITE has " + result[2]);
