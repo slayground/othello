@@ -3,34 +3,42 @@ import java.util.Scanner;
 
 class Othello {
     public static void main(String[] args) {
-        System.out.println("Boardgame sucks");
         Board game = new Board();
 
         game.possibleMoves('B');
         game.possibleMoves('W');
 
+        int round = 1;
         while (game.gameStatus() == 3) {
+            System.out.println("Round " + round);
 
-            String input = getInput(game);
-            int posX = Character.getNumericValue(input.charAt(0));
-            int posY= Character.getNumericValue(input.charAt(1));
+            game.displayTable();
+
+            game.displayPossibleMovesBlack();
 
             if (game.getNumChoices('B') == 0) {
                 System.out.println("No move this round for BLACK. Player lose round.");
             } else {
+                String input = getInput(game);
+                int posX = Character.getNumericValue(input.charAt(0));
+                int posY= Character.getNumericValue(input.charAt(1));
                 game.newMove('B', posX, posY);
+                game.displayTable();
             }
 
+            game.displayPossibleMovesWhite();
             if (game.gameStatus() == 3) {
                 game.botMove();
             } else {
                 break;
             }
-
+            round++;
+            System.out.println("___________________________");
         }
 
         int[] result = game.getWinner();
         int winnerCode = result[0];
+
         if (winnerCode == 1) {
             System.out.println("Winner is BLACK - PLAYER.");
         } else if (winnerCode == 2) {
@@ -38,6 +46,9 @@ class Othello {
         } else {
             System.out.println("Tie game.");
         }
+
+        System.out.println("FINAL TABLE");
+        game.displayTable();
         System.out.println("BLACK has " + result[1]);
         System.out.println("WHITE has " + result[2]);
     }

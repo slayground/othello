@@ -48,8 +48,6 @@ class Board {
         }
 
         initiateTable();
-
-        displayTable();
     }
 
     public void initiateTable() {
@@ -172,11 +170,12 @@ class Board {
         // System.out.println("NEW CURRENT_BLACKS " + CURRENT_BLACKS);
         // System.out.println("NEW CURRENT WHITES " + CURRENT_WHITES);
 
-        displayTable();
-        displayPossibleMoves();
-
-        // validateInput(player, posX, posY);
-
+        // displayTable();
+        // if (player == BLACK) {
+        //     displayPossibleMovesWhite();
+        // } else {
+        //     displayPossibleMovesBlack();
+        // }
     }
 
     public void flipSign(char oldValue, char newValue, ArrayList<ArrayList<String>> arrays) {
@@ -521,22 +520,30 @@ class Board {
     }
 
     public void displayTable() {
+        System.out.println("     0   1   2   3   4   5   6   7");
+        System.out.println("   _________________________________");
         for (int row = 0; row < NUM_OF_ROW_COLUMN; row++) {
+            //System.out.println("   |   |   |   |   |   |   |   |   |");
+            System.out.print(" " + row + " ");
             for (int col = 0; col < NUM_OF_ROW_COLUMN; col++) {
-                System.out.print(TABLE[row][col]);
+                System.out.print("| " + TABLE[row][col] + " ");
             }
+            System.out.print("|");
             System.out.println();
+            System.out.println("   |___|___|___|___|___|___|___|___|");
         }
+        System.out.println();
     }
 
-    public void displayPossibleMoves() {
-
-        System.out.println("Possible Moves for BLACK: ");
+    public void displayPossibleMovesBlack() {
+        System.out.println("Possible Moves for BLACK: " + POSSIBLE_MOVES_BLACK.size());
         for (Map.Entry<String, ArrayList<ArrayList<String>>> entry : POSSIBLE_SCENARIOS_BLACK.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
+    }
 
-        System.out.println("Possible Moves for WHITE: ");
+    public void displayPossibleMovesWhite() {
+        System.out.println("Possible Moves for WHITE: " + POSSIBLE_MOVES_WHITE.size());
         for (Map.Entry<String, ArrayList<ArrayList<String>>> entry : POSSIBLE_SCENARIOS_WHITE.entrySet()) {
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
