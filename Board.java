@@ -1,9 +1,4 @@
-
-// TODO:
-// newMove() -> check valid -> update table
-// game flow
-// diagonal
-// AI
+// Board: Othello Game Structure
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -40,6 +35,7 @@ class Board {
 
     // generate a default 8x8 board with 2 blacks and 2 whites at the middle
     public Board() {
+
         for (int row = 0; row < NUM_OF_ROW_COLUMN; row++) {
             for (int col = 0; col < NUM_OF_ROW_COLUMN; col++) {
                 TABLE[row][col] = EMPTY;

@@ -1,3 +1,5 @@
+// Othello: Flow of the game
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -6,6 +8,21 @@ class Othello {
     static final char BLACK = 'B';
     static final char WHITE = 'W';
     public static void main(String[] args) {
+
+        System.out.println("--> Welcome to Othello.");
+        System.out.println();
+        System.out.println("--> The goal of the game is to outscore the opponent on the board.");
+        System.out.println("----> If you can place a disk so that on both ends are your discs");
+        System.out.println("----> and everything in the middle belongs to your opponent:");
+        System.out.println("--------> Flip all elements in between to yours.");
+        System.out.println("--------> Don't understand? http://bit.ly/tryothello");
+        System.out.println();
+        System.out.println("--> How to win? Play until both are out of moves.");
+        System.out.println("----> You are BLACK.");
+        System.out.println("----> Bot is WHITE.");
+        System.out.println("--------> You go first because I like you! Let's go.");
+        System.out.println();
+        
         Board game = new Board();
 
         // generate possible moves for the default table
@@ -47,6 +64,11 @@ class Othello {
         }
 
         // After while loop ends -> decide winner
+
+        System.out.println("FINAL TABLE");
+        System.out.println();
+        game.displayTable();
+
         int[] result = game.getWinner();
         int winnerCode = result[0];
 
@@ -58,9 +80,6 @@ class Othello {
             System.out.println("Tie game.");
         }
 
-        System.out.println("FINAL TABLE");
-        System.out.println();
-        game.displayTable();
         System.out.println("BLACK has " + result[1]);
         System.out.println("WHITE has " + result[2]);
     }
