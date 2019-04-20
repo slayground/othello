@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 class Othello {
 
-    static final char BLACK = 'B';
-    static final char WHITE = 'W';
+    private static final char BLACK = 'B';
+    private static final char WHITE = 'W';
     public static void main(String[] args) {
 
         System.out.println("--> Welcome to Othello.");

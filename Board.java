@@ -12,13 +12,11 @@ class Board {
 
     private static final int NUM_OF_PLAYERS = 2;
     private static final int NUM_OF_ROW_COLUMN = 8;
-    private static int NUM_OF_CHECKERS = 4;
 
     private static char[][] TABLE = new char[NUM_OF_ROW_COLUMN][NUM_OF_ROW_COLUMN];
     private static final char EMPTY = '_';
     private static final char BLACK = 'B';
     private static final char WHITE = 'W';
-    private static final char POSSIBLE = '*';
 
     // Current discs currently on the table of B and W
     static ArrayList<String> CURRENT_BLACKS = new ArrayList<String>();
