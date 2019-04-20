@@ -10,15 +10,15 @@ class Board {
     // BLACK 'B'
     // WHITE 'W'
 
-    static final int NUM_OF_PLAYERS = 2;
-    static final int NUM_OF_ROW_COLUMN = 8;
-    static int NUM_OF_CHECKERS = 4;
+    private static final int NUM_OF_PLAYERS = 2;
+    private static final int NUM_OF_ROW_COLUMN = 8;
+    private static int NUM_OF_CHECKERS = 4;
 
-    static char[][] TABLE = new char[NUM_OF_ROW_COLUMN][NUM_OF_ROW_COLUMN];
-    static final char EMPTY = '_';
-    static final char BLACK = 'B';
-    static final char WHITE = 'W';
-    static final char POSSIBLE = '*';
+    private static char[][] TABLE = new char[NUM_OF_ROW_COLUMN][NUM_OF_ROW_COLUMN];
+    private static final char EMPTY = '_';
+    private static final char BLACK = 'B';
+    private static final char WHITE = 'W';
+    private static final char POSSIBLE = '*';
 
     // Current discs currently on the table of B and W
     static ArrayList<String> CURRENT_BLACKS = new ArrayList<String>();
@@ -160,7 +160,7 @@ class Board {
     }
 
     // Flip the sign of all elements between
-    public void flipSign(char oldValue, char newValue, ArrayList<ArrayList<String>> arrays) {
+    private void flipSign(char oldValue, char newValue, ArrayList<ArrayList<String>> arrays) {
 
         for (int list = 0; list < arrays.size(); list++) {
             for (int index = 0; index < arrays.get(list).size(); index++) {
@@ -254,7 +254,7 @@ class Board {
     //          if at empty possition
     //              add betweenElements to possible moves of that player
 
-    public void checkHorizontalLeft(char player, int posX, int posY) {
+    private void checkHorizontalLeft(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer = getOppositePlayer(player);
@@ -312,7 +312,7 @@ class Board {
         }
     }
 
-    public void checkHorizontalRight(char player, int posX, int posY) {
+    private void checkHorizontalRight(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer = getOppositePlayer(player);
@@ -370,7 +370,7 @@ class Board {
         }
     }
 
-    public void checkVerticalUp(char player, int posX, int posY) {
+    private void checkVerticalUp(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer = getOppositePlayer(player);
@@ -428,7 +428,7 @@ class Board {
         }
     }
 
-    public void checkVerticalDown(char player, int posX, int posY) {
+    private void checkVerticalDown(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer = getOppositePlayer(player);
@@ -486,7 +486,7 @@ class Board {
         }
     }
 
-    public void checkDiagonalUpLeft(char player, int posX, int posY) {
+    private void checkDiagonalUpLeft(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer = getOppositePlayer(player);
@@ -546,7 +546,7 @@ class Board {
         }
     }
 
-    public void checkDiagonalUpRight(char player, int posX, int posY) {
+    private void checkDiagonalUpRight(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer = getOppositePlayer(player);
@@ -606,7 +606,7 @@ class Board {
         }
     }
 
-    public void checkDiagonalDownRight(char player, int posX, int posY) {
+    private void checkDiagonalDownRight(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer = getOppositePlayer(player);
@@ -667,7 +667,7 @@ class Board {
         }
     }
 
-    public void checkDiagonalDownLeft(char player, int posX, int posY) {
+    private void checkDiagonalDownLeft(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
 
         char oppositePlayer = getOppositePlayer(player);
