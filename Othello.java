@@ -2,13 +2,22 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 class Othello {
+
+    static final char BLACK = 'B';
+    static final char WHITE = 'W';
     public static void main(String[] args) {
         Board game = new Board();
 
-        game.possibleMoves('B');
-        game.possibleMoves('W');
+        // generate possible moves for the default table
+        game.possibleMoves(BLACK);
+        game.possibleMoves(WHITE);
 
         int round = 1;
+        
+        // When game status = 3 (no winners yet) -> keep playing
+        // Player is BLACK. Bot is WHITE
+        // Each player take turn or will lose round if there's no move to make
+        // When game status != 3 (both ran out moves or one has no discs left) -> decide winner
         while (game.gameStatus() == 3) {
             System.out.println("Round " + round);
 
@@ -16,13 +25,14 @@ class Othello {
 
             game.displayPossibleMovesBlack();
 
-            if (game.getNumChoices('B') == 0) {
+            // skip this round of PLAYER if there's no move to be made
+            if (game.getNumChoices(BLACK) == 0) {
                 System.out.println("No move this round for BLACK. Player lose round.");
             } else {
                 String input = getInput(game);
                 int posX = Character.getNumericValue(input.charAt(0));
                 int posY= Character.getNumericValue(input.charAt(1));
-                game.newMove('B', posX, posY);
+                game.newMove(BLACK, posX, posY);
                 game.displayTable();
             }
 
@@ -36,6 +46,7 @@ class Othello {
             System.out.println("___________________________");
         }
 
+        // After while loop ends -> decide winner
         int[] result = game.getWinner();
         int winnerCode = result[0];
 
@@ -54,6 +65,7 @@ class Othello {
         System.out.println("WHITE has " + result[2]);
     }
 
+    // Verify input from scanner so that it must be XX with X from 0-7
     public static boolean verifyInput(String input) {
         String allowedStr = new String("01234567");
         ArrayList<Character> allowed = new ArrayList<Character>();
@@ -77,6 +89,7 @@ class Othello {
         return true;
     }
 
+    // Get input from scanner, verify, and return
     public static String getInput(Board game) {
         String result = "";
         Scanner scanner = new Scanner(System.in);
@@ -92,11 +105,11 @@ class Othello {
                     int posX = Character.getNumericValue(input.charAt(0));
                     int posY= Character.getNumericValue(input.charAt(1));
 
-                    if (game.validateInput('B', posX, posY)) {
+                    if (game.validateInput(BLACK, posX, posY)) {
                         result = input;
                         System.out.println("Valid input. You made a move at " + input);
                     } else {
-                        System.out.println("Valid input but can't make moves based on current table");
+                        System.out.println("Valid input already been made");
                     }
 
                 } else {

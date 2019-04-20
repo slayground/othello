@@ -25,21 +25,20 @@ class Board {
     static final char WHITE = 'W';
     static final char POSSIBLE = '*';
 
+    // Current discs currently on the table of B and W
     static ArrayList<String> CURRENT_BLACKS = new ArrayList<String>();
     static ArrayList<String> CURRENT_WHITES = new ArrayList<String>();
 
-    static ArrayList<String> POSSIBLE_BLACKS = new ArrayList<String>();
-    static ArrayList<String> POSSIBLE_WHITES = new ArrayList<String>();
-
     static ArrayList<String> POSSIBLE_MOVES = new ArrayList<String>();
-    static Map<String, ArrayList<String>> POSSIBLE_SCENARIOS = new HashMap<String, ArrayList<String>>();
 
+    // Get possible moves and an aray of possible discs to be flipped
     static ArrayList<String> POSSIBLE_MOVES_BLACK = new ArrayList<String>();
     static Map<String, ArrayList<ArrayList<String>>> POSSIBLE_SCENARIOS_BLACK = new HashMap<String, ArrayList<ArrayList<String>>>();
 
     static ArrayList<String> POSSIBLE_MOVES_WHITE = new ArrayList<String>();
     static Map<String, ArrayList<ArrayList<String>>> POSSIBLE_SCENARIOS_WHITE = new HashMap<String, ArrayList<ArrayList<String>>>();
 
+    // generate a default 8x8 board with 2 blacks and 2 whites at the middle
     public Board() {
         for (int row = 0; row < NUM_OF_ROW_COLUMN; row++) {
             for (int col = 0; col < NUM_OF_ROW_COLUMN; col++) {
@@ -63,6 +62,7 @@ class Board {
         CURRENT_WHITES.add("44");
     }
 
+    // Since the input from scanner is String -> we extract x and y coordinate to an array
     public int[] convertInput(String input) {
         int x = Character.getNumericValue(input.charAt(0));
         int y = Character.getNumericValue(input.charAt(1));
@@ -70,6 +70,10 @@ class Board {
         return result;
     }
 
+    // Get current status of the game
+    // 1: Full table -> decides winner based on number of discs on the table
+    // 2: One of the players have no disc on table left
+    // 3: Not 1 and 2 -> keep playing
     public int gameStatus() {
         if (CURRENT_BLACKS.size() + CURRENT_WHITES.size() == NUM_OF_ROW_COLUMN * NUM_OF_ROW_COLUMN) {
             return 1;
@@ -80,6 +84,7 @@ class Board {
         }
     }
 
+    // Return the winner when game status != 3
     public int[] getWinner() {
         int blackSize = CURRENT_BLACKS.size();
         int whiteSize = CURRENT_WHITES.size();
@@ -98,6 +103,7 @@ class Board {
         return result;
     }
 
+    // WHITE - BOT makes a move randomly based on possible options
     public void botMove() {
         int size = POSSIBLE_MOVES_WHITE.size();
 
@@ -114,6 +120,7 @@ class Board {
         }
     }
 
+    // Return the number of possible moves can be made by a player
     public int getNumChoices(char player) {
         if (player == BLACK) {
             return POSSIBLE_MOVES_BLACK.size();
@@ -122,33 +129,30 @@ class Board {
         }
     }
 
+    // BLACK - PLAYER make a new move
     public void newMove(char player, int posX, int posY) {
-
-        // POSSIBLE_MOVES.clear();
-        // POSSIBLE_SCENARIOS.clear();
 
         String pos = "" + posX + posY;
 
         if (player == BLACK) {
             TABLE[posX][posY] = BLACK;
-            // System.out.println("ADDING " + pos + " TO CURRENT_BLACKS");
+
+            // Add the position of new disc to the BLACK discs
             CURRENT_BLACKS.add(pos);
 
-            // System.out.println("BEFORE FLIPPING WHITE");
-            // System.out.println("POSSIBLE_SCENARIOS_BLACK " +
-            // POSSIBLE_SCENARIOS_BLACK.get(pos));
+            // Flip all the discs in between 
             flipSign(WHITE, BLACK, POSSIBLE_SCENARIOS_BLACK.get(pos));
         } else if (player == WHITE) {
             TABLE[posX][posY] = WHITE;
-            // System.out.println("ADDING " + pos + " TO CURRENT_WHITES");
+
+            // Add the position of new disc to the WHITE discs
             CURRENT_WHITES.add(pos);
 
-            // System.out.println("BEFORE FLIPPING BLACK");
-            // System.out.println("POSSIBLE_SCENARIOS_WHITE " +
-            // POSSIBLE_SCENARIOS_WHITE.get(pos));
+            // Flip all the discs in between 
             flipSign(BLACK, WHITE, POSSIBLE_SCENARIOS_WHITE.get(pos));
         }
 
+        // Since table changes -> clear possible moves and resets
         POSSIBLE_MOVES_BLACK.clear();
         POSSIBLE_MOVES_WHITE.clear();
 
@@ -157,18 +161,9 @@ class Board {
 
         possibleMoves(BLACK);
         possibleMoves(WHITE);
-
-        // System.out.println("NEW CURRENT_BLACKS " + CURRENT_BLACKS);
-        // System.out.println("NEW CURRENT WHITES " + CURRENT_WHITES);
-
-        // displayTable();
-        // if (player == BLACK) {
-        // displayPossibleMovesWhite();
-        // } else {
-        // displayPossibleMovesBlack();
-        // }
     }
 
+    // Flip the sign of all elements between
     public void flipSign(char oldValue, char newValue, ArrayList<ArrayList<String>> arrays) {
 
         for (int list = 0; list < arrays.size(); list++) {
@@ -177,10 +172,11 @@ class Board {
                 int posX = pos[0];
                 int posY = pos[1];
 
-                // System.out.println("Flipping " + posX + " " + posY);
                 TABLE[posX][posY] = newValue;
 
                 String flippedItem = "" + posX + posY;
+
+                // Add and remove flipped elements from WHITES and BLACKS
                 if (oldValue == BLACK) {
                     CURRENT_BLACKS.remove(flippedItem);
                     CURRENT_WHITES.add(flippedItem);
@@ -192,19 +188,20 @@ class Board {
         }
     }
 
+    // Make sure that the coordinate the move to be made is empty (not B or W)
     public boolean validateInput(char player, int posX, int posY) {
 
         String pos = "" + posX + posY;
 
         if (player == BLACK) {
-            // possibleMoves(BLACK);
+
             if (POSSIBLE_SCENARIOS_BLACK.containsKey(pos)) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            // possibleMoves(WHITE);
+
             if (POSSIBLE_SCENARIOS_WHITE.containsKey(pos)) {
                 return true;
             } else {
@@ -214,6 +211,7 @@ class Board {
 
     }
 
+    // Generate all possible moves of a player based on current table
     public void possibleMoves(char player) {
         if (player == BLACK) {
             for (int i = 0; i < CURRENT_BLACKS.size(); i++) {
@@ -221,6 +219,7 @@ class Board {
                 int posX = Character.getNumericValue(pos.charAt(0));
                 int posY = Character.getNumericValue(pos.charAt(1));
 
+                // Get all possible moves from all 8 directions
                 checkHorizontalLeft(player, posX, posY);
                 checkHorizontalRight(player, posX, posY);
                 checkVerticalUp(player, posX, posY);
@@ -229,7 +228,6 @@ class Board {
                 checkDiagonalUpRight(player, posX, posY);
                 checkDiagonalDownRight(player, posX, posY);
                 checkDiagonalDownLeft(player, posX, posY);
-                // checkDiagonal(player, posX, posY);
             }
         } else if (player == WHITE) {
             for (int i = 0; i < CURRENT_WHITES.size(); i++) {
@@ -237,6 +235,7 @@ class Board {
                 int posX = Character.getNumericValue(pos.charAt(0));
                 int posY = Character.getNumericValue(pos.charAt(1));
 
+                // Get all possible moves from all 8 directions
                 checkHorizontalLeft(player, posX, posY);
                 checkHorizontalRight(player, posX, posY);
                 checkVerticalUp(player, posX, posY);
@@ -245,10 +244,19 @@ class Board {
                 checkDiagonalUpRight(player, posX, posY);
                 checkDiagonalDownRight(player, posX, posY);
                 checkDiagonalDownLeft(player, posX, posY);
-                // checkDiagonal(player, posX, posY);
             }
         }
     }
+
+    // BASIC IDEA OF CHECKING POSSIBLE MOVE
+    //  return if at edge
+    //  else if (adjacent is opposite)
+    //      increment/decrement index while adjacent is still opposite of not at edge
+    //      add disc to an array betweenElements
+    //
+    //      after while loop complete (either out of edge or empty position)
+    //          if at empty possition
+    //              add betweenElements to possible moves of that player
 
     public void checkHorizontalLeft(char player, int posX, int posY) {
         ArrayList<String> betweenElements = new ArrayList<String>();
@@ -271,8 +279,6 @@ class Board {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        // POSSIBLE_MOVES_BLACK.add(possible);
-                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
                             // if the key has already been used,
@@ -289,8 +295,6 @@ class Board {
                             POSSIBLE_MOVES_BLACK.add(possible);
                         }
                     } else {
-                        // POSSIBLE_MOVES_WHITE.add(possible);
-                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
                             // if the key has already been used,
@@ -333,8 +337,6 @@ class Board {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        // POSSIBLE_MOVES_BLACK.add(possible);
-                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
                             // if the key has already been used,
@@ -351,8 +353,6 @@ class Board {
                             POSSIBLE_MOVES_BLACK.add(possible);
                         }
                     } else {
-                        // POSSIBLE_MOVES_WHITE.add(possible);
-                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
                             // if the key has already been used,
@@ -395,8 +395,6 @@ class Board {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        // POSSIBLE_MOVES_BLACK.add(possible);
-                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
                             // if the key has already been used,
@@ -413,8 +411,6 @@ class Board {
                             POSSIBLE_MOVES_BLACK.add(possible);
                         }
                     } else {
-                        // POSSIBLE_MOVES_WHITE.add(possible);
-                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
                             // if the key has already been used,
@@ -457,8 +453,6 @@ class Board {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        // POSSIBLE_MOVES_BLACK.add(possible);
-                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
                             // if the key has already been used,
@@ -475,8 +469,6 @@ class Board {
                             POSSIBLE_MOVES_BLACK.add(possible);
                         }
                     } else {
-                        // POSSIBLE_MOVES_WHITE.add(possible);
-                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
                             // if the key has already been used,
@@ -507,7 +499,7 @@ class Board {
         if (posX == 0 || posY == 0) {
             return;
         } else if (TABLE[posX - 1][posY - 1] == oppositePlayer) {
-            // check vertical down
+            // check vertical up and horizontal left
             posX--;
             posY--;
             while (TABLE[posX][posY] == oppositePlayer && posX > 0 && posY > 0) {
@@ -521,8 +513,6 @@ class Board {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        // POSSIBLE_MOVES_BLACK.add(possible);
-                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
                             // if the key has already been used,
@@ -539,8 +529,6 @@ class Board {
                             POSSIBLE_MOVES_BLACK.add(possible);
                         }
                     } else {
-                        // POSSIBLE_MOVES_WHITE.add(possible);
-                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
                             // if the key has already been used,
@@ -571,7 +559,7 @@ class Board {
         if (posX == 0 || posY == NUM_OF_ROW_COLUMN - 1) {
             return;
         } else if (TABLE[posX - 1][posY + 1] == oppositePlayer) {
-            // check vertical down
+            // check vertical up and horizontal right
             posX--;
             posY++;
             while (TABLE[posX][posY] == oppositePlayer && posX > 0 && posY < NUM_OF_ROW_COLUMN - 1) {
@@ -585,8 +573,6 @@ class Board {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        // POSSIBLE_MOVES_BLACK.add(possible);
-                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
                             // if the key has already been used,
@@ -603,8 +589,6 @@ class Board {
                             POSSIBLE_MOVES_BLACK.add(possible);
                         }
                     } else {
-                        // POSSIBLE_MOVES_WHITE.add(possible);
-                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
                             // if the key has already been used,
@@ -635,7 +619,7 @@ class Board {
         if (posX == NUM_OF_ROW_COLUMN - 1 || posY == NUM_OF_ROW_COLUMN - 1) {
             return;
         } else if (TABLE[posX + 1][posY + 1] == oppositePlayer) {
-            // check vertical down
+            // check vertical down and horizontal right
             posX++;
             posY++;
             while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN - 1
@@ -650,8 +634,6 @@ class Board {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        // POSSIBLE_MOVES_BLACK.add(possible);
-                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
                             // if the key has already been used,
@@ -668,8 +650,6 @@ class Board {
                             POSSIBLE_MOVES_BLACK.add(possible);
                         }
                     } else {
-                        // POSSIBLE_MOVES_WHITE.add(possible);
-                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
                             // if the key has already been used,
@@ -700,7 +680,7 @@ class Board {
         if (posX == NUM_OF_ROW_COLUMN - 1|| posY == 0) {
             return;
         } else if (TABLE[posX + 1][posY - 1] == oppositePlayer) {
-            // check vertical down
+            // check vertical up and horizontal left
             posX++;
             posY--;
             while (TABLE[posX][posY] == oppositePlayer && posX < NUM_OF_ROW_COLUMN - 1 && posY > 0) {
@@ -714,8 +694,6 @@ class Board {
                     String possible = "" + posX + posY;
 
                     if (player == BLACK) {
-                        // POSSIBLE_MOVES_BLACK.add(possible);
-                        // POSSIBLE_SCENARIOS_BLACK.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_BLACK.containsKey(possible)) {
                             // if the key has already been used,
@@ -732,8 +710,6 @@ class Board {
                             POSSIBLE_MOVES_BLACK.add(possible);
                         }
                     } else {
-                        // POSSIBLE_MOVES_WHITE.add(possible);
-                        // POSSIBLE_SCENARIOS_WHITE.put(possible, betweenElements);
 
                         if (POSSIBLE_SCENARIOS_WHITE.containsKey(possible)) {
                             // if the key has already been used,
@@ -755,6 +731,7 @@ class Board {
         }
     }
 
+    // Return the opposite player
     public char getOppositePlayer(char player) {
         if (player == BLACK) {
             return WHITE;
@@ -763,6 +740,7 @@ class Board {
         }
     }
 
+    // Display the table with current discs
     public void displayTable() {
         System.out.println("     0   1   2   3   4   5   6   7");
         System.out.println("   _________________________________");
@@ -779,6 +757,7 @@ class Board {
         System.out.println();
     }
 
+    // Display all the possible moves that BLACK - PLAYER can make
     public void displayPossibleMovesBlack() {
         System.out.println("Possible Moves for BLACK: " + POSSIBLE_MOVES_BLACK.size());
         for (Map.Entry<String, ArrayList<ArrayList<String>>> entry : POSSIBLE_SCENARIOS_BLACK.entrySet()) {
@@ -786,6 +765,7 @@ class Board {
         }
     }
 
+    // Display all the possible moves that WHITE - BOT can make
     public void displayPossibleMovesWhite() {
         System.out.println("Possible Moves for WHITE: " + POSSIBLE_MOVES_WHITE.size());
         for (Map.Entry<String, ArrayList<ArrayList<String>>> entry : POSSIBLE_SCENARIOS_WHITE.entrySet()) {
